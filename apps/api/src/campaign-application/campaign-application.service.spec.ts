@@ -117,7 +117,7 @@ describe('CampaignApplicationService', () => {
       const mockCampaignApplicationFile = mockCampaignApplicationFileFn()
       const mockCampaignApplicationUploadFile = mockCampaignApplicationUploadFileFn()
 
-      const mockOrganizerId = 'mockOrganizerId'
+      const mockOrganizerId = 'mockOrganizerId'         
       jest.spyOn(mockOrganizerService, 'create').mockResolvedValue({
         id: mockOrganizerId,
         personId: mockPerson.id,
