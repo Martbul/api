@@ -184,7 +184,7 @@ describe('CampaignApplicationService', () => {
         toEntity: new CreateCampaignApplicationDto().toEntity,
       }
 
-      const mockOrganizerId = 'mockOrganizerId'
+      const mockOrganizerId = 'mockOrganizerId'         
       jest.spyOn(mockOrganizerService, 'create').mockResolvedValue({
         id: mockOrganizerId,
         personId: mockPerson.id,
