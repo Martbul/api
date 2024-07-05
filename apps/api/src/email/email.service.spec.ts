@@ -16,6 +16,7 @@ const partialEmail = {
   from: 'test@test.com',
 }
 const emailMock = {
+  
   ...partialEmail,
   ...{ subject, html },
 }
