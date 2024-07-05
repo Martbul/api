@@ -20,9 +20,10 @@ export const mockNewCampaignApplication = {
 
 const dto: CreateCampaignApplicationDto = {
   ...mockNewCampaignApplication,
-  acceptTermsAndConditions: true,
-  transparencyTermsAccepted: true,
-  personalInformationProcessingAccepted: true,
+  //!bring back to normal when the task is done
+  // acceptTermsAndConditions: true,
+  // transparencyTermsAccepted: true,
+  // personalInformationProcessingAccepted: true,
   toEntity: new CreateCampaignApplicationDto().toEntity,
 }
 

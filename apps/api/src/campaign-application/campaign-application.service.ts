@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { OrganizerService } from '../organizer/organizer.service'
 import { Person } from '@prisma/client'
 import { S3Service } from './../s3/s3.service'
-
+import { CreateCampaignApplicationFileDto } from './dto/create-campaignApplication-file.dto'
 @Injectable()
 export class CampaignApplicationService {
   private readonly bucketName: string = 'campaignapplication-files'
@@ -24,6 +24,7 @@ export class CampaignApplicationService {
     files: Express.Multer.File[],
   ) {
     try {
+      //! remove comment when pushing to prod
       // if (
       //   createCampaignApplicationDto.acceptTermsAndConditions === false ||
       //   createCampaignApplicationDto.transparencyTermsAccepted === false ||
@@ -63,29 +64,14 @@ export class CampaignApplicationService {
       const newCampaignApplication = await this.prisma.campaignApplication.create({
         data: sanitizedData,
       })
-      //! developing S3 file upload features:
-       
+      
 
       if (files) {
-        // const allMovementsFromAllFiles: { payment: CreateBankPaymentDto; paymentRef: string }[] = []
         await Promise.all(
-          files.map((file, key) => {
-            // allMovementsFromAllFiles.push(...parseBankTransactionsFile(file.buffer))
-            // const filesType = body.types
-            // return this.bankTransactionsFileService.create(
-            // Array.isArray(filesType) ? filesType[key] : filesType,
-            // file.originalname,
-            // file.mimetype,
-            // bankTransactionsFileId,
-            // person,
-            // file.buffer,
-            // )
-
-      return this.campaignApplicationFilesCreate(file,person.id,newCampaignApplication.id)
-          }),
+          files.map((file) => {
+            return this.campaignApplicationFilesCreate(file, person.id, newCampaignApplication.id)
+          })
         )
-
-     
       }
 
       return newCampaignApplication
@@ -111,29 +97,37 @@ export class CampaignApplicationService {
     return `This action removes a #${id} campaignApplication`
   }
 
-  campaignApplicationFilesCreate = async (file,personId,campaignApplicationId) => {
-          console.log(file);
-          
-          const createFileInDb = await this.prisma.campaignApplicationFile.create({
-            data: {
-              filename: file.originalName,
-              campaignApplicationId,
-              personId,
-              mimetype: file.mimetype,
-              // role: file.role,
-            }
-          })
+  campaignApplicationFilesCreate = async (
+    file,
+    personId: string,
+    campaignApplicationId: string,
+  ) => {
+    //! add other file types if needed(docx, xlsx, etc)
+    if (file.mimetype.includes('pdf')) {
+      file.role = 'document'
+    }
 
-          await this.s3.uploadObject(
-            this.bucketName,
-            createFileInDb.id,
-            file.filename,
-            file.mimetype,
-            file.buffer,
-            'CampaignApplicationFile',
-           'sdsds',
-          
-           personId
-          )
-        }
+    const fileDto: CreateCampaignApplicationFileDto = {
+      filename: file.originalname,
+      mimetype: file.mimetype,
+      campaignApplicationId,
+      personId,
+      role: file.role,
+    }
+
+    const createFileInDb = await this.prisma.campaignApplicationFile.create({
+      data: fileDto,
+    })
+
+    await this.s3.uploadObject(
+      this.bucketName,
+      createFileInDb.id,
+      file.filename,
+      file.mimetype,
+      file.buffer,
+      'CampaignApplicationFile',
+      campaignApplicationId,
+      personId,
+    )
+  }
 }
