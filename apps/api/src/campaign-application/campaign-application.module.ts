@@ -8,6 +8,6 @@ import { S3Service } from '../s3/s3.service'
 @Module({
   imports: [PrismaModule],
   controllers: [CampaignApplicationController],
-providers: [CampaignApplicationService,PersonService,OrganizerService,S3Service],
+  providers: [CampaignApplicationService, PersonService, OrganizerService, S3Service],
 })
 export class CampaignApplicationModule {}

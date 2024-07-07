@@ -15,22 +15,22 @@ export class CreateCampaignApplicationDto {
   campaignName: string
 
   /** user needs to agree to this as a prerequisite to creating a campaign application */
-  // @ApiProperty()
-  // @Expose()
-  // @IsBoolean()
-  // acceptTermsAndConditions: boolean
+  @ApiProperty()
+  @Expose()
+  @IsBoolean()
+  acceptTermsAndConditions: boolean
 
-  // /** user needs to agree to this as a prerequisite to creating a campaign application */
-  // @ApiProperty()
-  // @Expose()
-  // @IsBoolean()
-  // transparencyTermsAccepted: boolean
+  /** user needs to agree to this as a prerequisite to creating a campaign application */
+  @ApiProperty()
+  @Expose()
+  @IsBoolean()
+  transparencyTermsAccepted: boolean
 
-  // /** user needs to agree to this as a prerequisite to creating a campaign application */
-  // @ApiProperty()
-  // @Expose()
-  // @IsBoolean()
-  // personalInformationProcessingAccepted: boolean
+  /** user needs to agree to this as a prerequisite to creating a campaign application */
+  @ApiProperty()
+  @Expose()
+  @IsBoolean()
+  personalInformationProcessingAccepted: boolean
 
   /** Who is organizing this campaign */
   @IsNotEmpty()

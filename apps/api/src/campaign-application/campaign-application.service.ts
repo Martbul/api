@@ -14,6 +14,7 @@ export class CampaignApplicationService {
     private organizerService: OrganizerService,
     private s3: S3Service,
   ) {}
+
   async getCampaignByIdWithPersonIds(id: string): Promise<UpdateCampaignApplicationDto> {
     throw new Error('Method not implemented.')
   }
@@ -24,14 +25,13 @@ export class CampaignApplicationService {
     files: Express.Multer.File[],
   ) {
     try {
-      //! remove comment when pushing to prod
-      // if (
-      //   createCampaignApplicationDto.acceptTermsAndConditions === false ||
-      //   createCampaignApplicationDto.transparencyTermsAccepted === false ||
-      //   createCampaignApplicationDto.personalInformationProcessingAccepted === false
-      // ) {
-      //   throw new BadRequestException('All agreements must be checked')
-      // }
+      if (
+        createCampaignApplicationDto.acceptTermsAndConditions === false ||
+        createCampaignApplicationDto.transparencyTermsAccepted === false ||
+        createCampaignApplicationDto.personalInformationProcessingAccepted === false
+      ) {
+        throw new BadRequestException('All agreements must be checked')
+      }
 
       let organizer = await this.prisma.organizer.findUnique({
         where: { personId: person.id },
@@ -64,13 +64,12 @@ export class CampaignApplicationService {
       const newCampaignApplication = await this.prisma.campaignApplication.create({
         data: sanitizedData,
       })
-      
 
       if (files) {
         await Promise.all(
           files.map((file) => {
             return this.campaignApplicationFilesCreate(file, person.id, newCampaignApplication.id)
-          })
+          }),
         )
       }
 

@@ -31,10 +31,9 @@ export class CampaignApplicationController {
   ) {}
 
   @Post('create')
-
   @UseInterceptors(
     FilesInterceptor('file', 5, {
-      limits: { fileSize: 1024 * 1024 * 10 }, //limit uploaded files to 5 at once and 10MB each
+      limits: { fileSize: 1024 * 1024 * 10 },
       fileFilter: (_req: Request, file, cb) => {
         validateFileType(file, cb)
       },
@@ -46,13 +45,12 @@ export class CampaignApplicationController {
     @AuthenticatedUser() user: KeycloakTokenParsed,
   ) {
     const person = await this.personService.findOneByKeycloakId(user.sub)
-
     if (!person) {
       Logger.error('No person found in database')
       throw new NotFoundException('No person found in database')
     }
 
-    return this.campaignApplicationService.create(createCampaignApplicationDto, person,files)
+    return this.campaignApplicationService.create(createCampaignApplicationDto, person, files)
   }
 
   @Get('list')
