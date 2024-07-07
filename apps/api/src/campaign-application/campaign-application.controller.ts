@@ -22,7 +22,7 @@ import { PersonService } from '../person/person.service'
 @Controller('campaign-application')
 export class CampaignApplicationController {
   constructor(
-    private readonly campaignApplicationService: CampaignApplicationService,
+private readonly campaignApplicationService: CampaignApplicationService,
     private readonly personService: PersonService,
   ) {}
 
@@ -54,16 +54,18 @@ export class CampaignApplicationController {
     return this.campaignApplicationService.findOne(id)
   }
 
+
   @Patch(':id')
-  @Roles({
-    roles: [RealmViewSupporters.role, ViewSupporters.role],
-    mode: RoleMatchingMode.ANY,
-  })
   async update(
     @Param('id') id: string,
     @Body() updateCampaignApplicationDto: UpdateCampaignApplicationDto,
     @AuthenticatedUser() user: KeycloakTokenParsed,
   ) {
-    return this.campaignApplicationService.update(id, updateCampaignApplicationDto)
+
+    const person = await this.personService.findOneByKeycloakId(user.sub)
+    if (isAdmin(user)) {
+    return this.campaignApplicationService.updateByAdmin(id, updateCampaignApplicationDto,person)
+    }
+    return this.campaignApplicationService.updateByOrganizer(id, updateCampaignApplicationDto,person)
   }
 }
