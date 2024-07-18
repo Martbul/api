@@ -8,7 +8,7 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common'
 import { PersonService } from '../person/person.service'
 import { mockUser, mockUserAdmin } from './../auth/__mocks__'
 import { mockNewCampaignApplication } from './__mocks__/campaign-application-mocks'
-
+import { mockCampaignApplicationFiles } from './__mocks__/campaign-application-mocks'
 describe('CampaignApplicationController', () => {
   let controller: CampaignApplicationController
   let service: CampaignApplicationService
@@ -46,19 +46,27 @@ describe('CampaignApplicationController', () => {
     jest.spyOn(personService, 'findOneByKeycloakId').mockResolvedValue(mockUser)
 
     // Act
-    await controller.create(mockCreateNewCampaignApplication, mockUser)
+    await controller.create(
+      mockCampaignApplicationFiles,
+      mockCreateNewCampaignApplication,
+      mockUser,
+    )
 
     // Assert
-    expect(service.create).toHaveBeenCalledWith(mockCreateNewCampaignApplication, mockUser)
+    expect(service.create).toHaveBeenCalledWith(
+      mockCreateNewCampaignApplication,
+      mockUser,
+      mockCampaignApplicationFiles,
+    )
   })
 
   it('when create called with wrong user it should throw NotFoundException', async () => {
     jest.spyOn(personService, 'findOneByKeycloakId').mockResolvedValue(null)
 
     // Act & Assert
-    await expect(controller.create(mockCreateNewCampaignApplication, mockUser)).rejects.toThrow(
-      NotFoundException,
-    )
+    await expect(
+      controller.create(mockCampaignApplicationFiles, mockCreateNewCampaignApplication, mockUser),
+    ).rejects.toThrow(NotFoundException)
   })
 
   it('when findAll called by a non-admin user it should throw a ForbiddenException', () => {
