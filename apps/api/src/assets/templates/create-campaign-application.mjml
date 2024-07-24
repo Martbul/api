@@ -1,9 +1,6 @@
 <mjml>
-  <mj-body background-color="#ffffff" >
-    <mj-section
-      background-color="#009FE3"
-      padding-bottom="0px"
-      padding-top="0">
+  <mj-body background-color="#ffffff">
+    <mj-section background-color="#009FE3" padding-bottom="0px" padding-top="0">
       <mj-column vertical-align="top" width="100%">
         <mj-text
           align="left"

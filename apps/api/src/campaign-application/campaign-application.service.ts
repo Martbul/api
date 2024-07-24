@@ -7,7 +7,7 @@ import { CampaignApplicationFileRole, Person } from '@prisma/client'
 import { S3Service } from './../s3/s3.service'
 import { CreateCampaignApplicationFileDto } from './dto/create-campaignApplication-file.dto'
 import { EmailService } from '../email/email.service'
-import { CreateCampaignApplicationEmailDto} from '../email/template.interface'
+import { CreateCampaignApplicationEmailDto } from '../email/template.interface'
 import { EmailData } from '../email/email.interface'
 @Injectable()
 export class CampaignApplicationService {
@@ -35,7 +35,6 @@ export class CampaignApplicationService {
       ) {
         throw new BadRequestException('All agreements must be checked')
       }
-      
 
       let organizer = await this.prisma.organizer.findUnique({
         where: { personId: person.id },
@@ -77,18 +76,16 @@ export class CampaignApplicationService {
         )
       }
 
-    
-      const userEmail = { to: [person.email]  as EmailData[]}
+      const userEmail = { to: [person.email] as EmailData[] }
 
       const emailData = {
-      campaignApplicationName:newCampaignApplication.campaignName,
-      editLink: 'https://www.formula1.com/',
-}
-      
+        campaignApplicationName: newCampaignApplication.campaignName,
+        editLink: 'https://www.formula1.com/',
+      }
+
       const mail = new CreateCampaignApplicationEmailDto(emailData)
-      
+
       await this.sendEmail.sendFromTemplate(mail, userEmail, {
-      
         bypassUnsubscribeManagement: { enable: true },
       })
 
@@ -108,35 +105,7 @@ export class CampaignApplicationService {
   }
 
   update(id: string, updateCampaignApplicationDto: UpdateCampaignApplicationDto) {
-   if(
-        updateCampaignApplicationDto.acceptTermsAndConditions === false ||
-        updateCampaignApplicationDto.transparencyTermsAccepted === false ||
-        updateCampaignApplicationDto.personalInformationProcessingAccepted === false
-      ) {
-        throw new BadRequestException('All agreements must be checked')
-      }
-      
-    
-
-      const sanitizedData = {
-        campaignName:updateCampaignApplicationDto.campaignName?.trim(),
-        organizerName:updateCampaignApplicationDto.organizerName?.trim(),
-        organizerEmail:updateCampaignApplicationDto.organizerEmail?.trim(),
-        organizerPhone:updateCampaignApplicationDto.organizerPhone?.trim(),
-        beneficiary:updateCampaignApplicationDto.beneficiary?.trim(),
-        organizerBeneficiaryRel:updateCampaignApplicationDto  .organizerBeneficiaryRel?.trim(),
-        goal:updateCampaignApplicationDto.goal?.trim(),
-        history:updateCampaignApplicationDto.history?.trim(),
-        amount:updateCampaignApplicationDto .amount?.trim(),
-        description:updateCampaignApplicationDto .description?.trim(),
-        campaignGuarantee:updateCampaignApplicationDto .campaignGuarantee?.trim(),
-        otherFinanceSources:updateCampaignApplicationDto .otherFinanceSources?.trim(),
-        otherNotes:updateCampaignApplicationDto .otherNotes?.trim(),
-        category:updateCampaignApplicationDto .category,
-      }
-
     return `This action updates a #${id} campaignApplication`
-
   }
 
   remove(id: string) {

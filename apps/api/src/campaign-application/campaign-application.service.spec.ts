@@ -17,6 +17,7 @@ import {
   mockCampaignApplicationFilesFn,
   mockCampaignApplicationUploadFileFn,
 } from './__mocks__/campaing-application-file-mocks'
+import { EmailService } from '../email/email.service'
 
 describe('CampaignApplicationService', () => {
   let service: CampaignApplicationService
@@ -39,6 +40,11 @@ describe('CampaignApplicationService', () => {
     uploadObject: jest.fn(),
   }
 
+  const mockEmailService = {
+    send: jest.fn(),
+    sendFromTemplate: jest.fn(),
+  }
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -46,6 +52,7 @@ describe('CampaignApplicationService', () => {
         MockPrismaService,
         { provide: OrganizerService, useValue: mockOrganizerService },
         { provide: S3Service, useValue: mockS3Service },
+        { provide: EmailService, useValue: mockEmailService },
       ],
     }).compile()
 
@@ -117,7 +124,7 @@ describe('CampaignApplicationService', () => {
       const mockCampaignApplicationFile = mockCampaignApplicationFileFn()
       const mockCampaignApplicationUploadFile = mockCampaignApplicationUploadFileFn()
 
-      const mockOrganizerId = 'mockOrganizerId'         
+      const mockOrganizerId = 'mockOrganizerId'
       jest.spyOn(mockOrganizerService, 'create').mockResolvedValue({
         id: mockOrganizerId,
         personId: mockPerson.id,
